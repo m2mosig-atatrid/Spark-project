@@ -1,0 +1,12 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Spark / Hadoop
+spark-*
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
