@@ -38,3 +38,27 @@ task_events_schema = StructType([
     StructField("disk_space_request", FloatType(), True),
     StructField("different_machines_constraint", BooleanType(), True)
 ])
+
+task_usage_schema = StructType([
+    StructField("start_time", LongType(), False),
+    StructField("end_time", LongType(), False),
+    StructField("job_id", LongType(), False),
+    StructField("task_index", IntegerType(), False),
+    StructField("machine_id", LongType(), False),
+    StructField("cpu_usage", FloatType(), True),                 
+    StructField("canonical_memory_usage", FloatType(), True),    
+    StructField("assigned_memory_usage", FloatType(), True),     
+    StructField("unmapped_page_cache", FloatType(), True),       
+    StructField("total_page_cache", FloatType(), True),          
+    StructField("maximum_memory_usage", FloatType(), True),      
+    StructField("disk_io_time", FloatType(), True),             
+    StructField("local_disk_space_usage", FloatType(), True),    
+    StructField("maximum_cpu_usage", FloatType(), True),         
+    StructField("maximum_disk_io_time", FloatType(), True),      
+    StructField("cycles_per_instruction", FloatType(), True),   
+    StructField("memory_accesses_per_instruction", FloatType(), True), 
+    StructField("sample_portion", FloatType(), True),          
+    StructField("aggregation_type", BooleanType(), True),       
+    StructField("sampled_cpu_usage", FloatType(), True)          
+])
+
