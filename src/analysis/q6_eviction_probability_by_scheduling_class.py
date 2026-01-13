@@ -70,7 +70,7 @@ eviction_rate = (
 # ----------------------------
 # Show results
 # ----------------------------
-print("\n===== Q6: Eviction Probability by Scheduling Class =====\n")
+
 eviction_rate.show(truncate=False)
 
 # ----------------------------

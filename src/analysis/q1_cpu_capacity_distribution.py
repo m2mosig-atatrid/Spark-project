@@ -1,13 +1,13 @@
-import sys
-import os
+import glob, warnings, sys, os
 
 sys.path.append(os.path.abspath("src"))
 
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
-import glob
 import matplotlib.pyplot as plt
 from schemas import machine_events_schema
+
+warnings.filterwarnings("ignore")
 
 # ----------------------------
 # Spark session
@@ -15,10 +15,11 @@ from schemas import machine_events_schema
 spark = (
     SparkSession.builder
     .appName("Q1_CPU_Distribution")
+    .config("spark.ui.showConsoleProgress", "false")
     .getOrCreate()
 )
 
-spark.sparkContext.setLogLevel("WARN")
+spark.sparkContext.setLogLevel("ERROR")
 
 # ----------------------------
 # Load machine events

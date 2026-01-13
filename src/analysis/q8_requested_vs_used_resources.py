@@ -74,7 +74,6 @@ df_joined = df_requests.join(
 cpu_corr = df_joined.stat.corr("cpu_request", "avg_cpu_usage")
 mem_corr = df_joined.stat.corr("memory_request", "avg_memory_usage")
 
-print("\n===== Q8: Requested vs Consumed Resources =====\n")
 print(f"CPU request vs CPU usage correlation: {cpu_corr:.4f}")
 print(f"Memory request vs Memory usage correlation: {mem_corr:.4f}")
 

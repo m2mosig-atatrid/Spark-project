@@ -36,7 +36,6 @@ job_locality = (
     )
 )
 
-print("\n===== Q7: Task Locality Within Jobs =====\n")
 job_locality.select("locality_ratio").describe().show()
 
 # Plot

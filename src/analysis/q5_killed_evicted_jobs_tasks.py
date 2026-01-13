@@ -74,7 +74,6 @@ tasks_percentage = (killed_tasks / total_tasks) * 100
 # ----------------------------
 # Print results
 # ----------------------------
-print("\n===== Q5: Jobs / Tasks Killed or Evicted =====\n")
 
 print(f"Total jobs: {total_jobs}")
 print(f"Jobs killed or evicted: {killed_jobs}")
