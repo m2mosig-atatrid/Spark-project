@@ -6,9 +6,7 @@ import glob
 
 from src.schemas import task_events_schema
 
-# ----------------------------
 # Spark session
-# ----------------------------
 spark = (
     SparkSession.builder
     .appName("Q6_Eviction_Probability_By_Scheduling_Class")
@@ -17,9 +15,7 @@ spark = (
 
 spark.sparkContext.setLogLevel("WARN")
 
-# ----------------------------
 # Load task events
-# ----------------------------
 task_files = glob.glob("data/task_events/*.csv.gz")
 
 df_tasks = (
@@ -28,9 +24,7 @@ df_tasks = (
     .csv(task_files)
 )
 
-# ----------------------------
 # Total tasks per scheduling class
-# ----------------------------
 total_tasks = (
     df_tasks
     .select("scheduling_class", "job_id", "task_index")
@@ -40,9 +34,7 @@ total_tasks = (
     .withColumnRenamed("count", "total_tasks")
 )
 
-# ----------------------------
 # Evicted tasks per scheduling class
-# ----------------------------
 evicted_tasks = (
     df_tasks
     .filter(col("event_type") == 2)  # eviction
@@ -53,9 +45,7 @@ evicted_tasks = (
     .withColumnRenamed("count", "evicted_tasks")
 )
 
-# ----------------------------
 # Compute eviction probability
-# ----------------------------
 eviction_rate = (
     total_tasks
     .join(evicted_tasks, on="scheduling_class", how="left")
@@ -67,15 +57,10 @@ eviction_rate = (
     .orderBy("scheduling_class")
 )
 
-# ----------------------------
 # Show results
-# ----------------------------
-
 eviction_rate.show(truncate=False)
 
-# ----------------------------
 # Plot
-# ----------------------------
 pdf = eviction_rate.toPandas()
 
 os.makedirs("plots", exist_ok=True)

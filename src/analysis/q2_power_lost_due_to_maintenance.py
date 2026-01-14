@@ -14,9 +14,7 @@ spark = SparkSession.builder \
     .appName("Q2_Power_Lost_Maintenance") \
     .getOrCreate()
 
-# --------------------------------------------------
-# 1. Load machine events
-# --------------------------------------------------
+# Load machine events
 files = glob.glob("data/machine_events/*.csv.gz")
 
 df = spark.read \
@@ -26,17 +24,13 @@ df = spark.read \
 # Keep only ADD (0) and REMOVE (1) events
 df_events = df.filter(col("event_type").isin([0, 1]))
 
-# --------------------------------------------------
-# 2. Determine observation window
-# --------------------------------------------------
+# Determine observation window
 min_time = df_events.agg({"time": "min"}).collect()[0][0]
 max_time = df_events.agg({"time": "max"}).collect()[0][0]
 
 total_time_span = max_time - min_time
 
-# --------------------------------------------------
-# 3. Get CPU capacity per machine (from ADD events)
-# --------------------------------------------------
+# Get CPU capacity per machine (from ADD events)
 df_cpu = df_events \
     .filter(col("event_type") == 0) \
     .select(
@@ -46,18 +40,14 @@ df_cpu = df_events \
     .dropna() \
     .dropDuplicates(["machine_id"])
 
-# --------------------------------------------------
-# 4. Compute total available computational power
-# --------------------------------------------------
+# Compute total available computational power
 total_cpu_capacity = df_cpu.agg(
     spark_sum("machine_cpu_capacity")
 ).collect()[0][0]
 
 total_available_power = total_cpu_capacity * total_time_span
 
-# --------------------------------------------------
-# 5. Compute downtime per machine
-# --------------------------------------------------
+# Compute downtime per machine
 window = Window.partitionBy("machine_id").orderBy("time")
 
 df_with_next = df_events \
@@ -74,9 +64,7 @@ df_downtime = df_downtime.withColumn(
     col("next_time") - col("time")
 )
 
-# --------------------------------------------------
-# 6. Compute lost computational power
-# --------------------------------------------------
+# Compute lost computational power
 df_lost = df_downtime.join(
     df_cpu,
     on="machine_id",
@@ -92,9 +80,7 @@ total_lost_power = df_lost.agg(
     spark_sum("lost_power")
 ).collect()[0][0]
 
-# --------------------------------------------------
-# 7. Compute percentage lost
-# --------------------------------------------------
+# Compute percentage lost
 percentage_lost = (total_lost_power / total_available_power) * 100
 
 print(f"Total available computational power: {total_available_power}")

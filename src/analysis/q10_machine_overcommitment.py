@@ -5,9 +5,7 @@ import matplotlib.pyplot as plt
 
 from src.schemas import machine_events_schema, task_events_schema
 
-# ----------------------------
 # Spark session
-# ----------------------------
 spark = (
     SparkSession.builder
     .appName("Q10_Machine_Overcommitment")
@@ -16,9 +14,7 @@ spark = (
 
 spark.sparkContext.setLogLevel("WARN")
 
-# ----------------------------
 # Load datasets
-# ----------------------------
 machine_files = glob.glob("data/machine_events/*.csv.gz")
 task_files = glob.glob("data/task_events/*.csv.gz")
 
@@ -34,9 +30,7 @@ df_tasks = (
     .csv(task_files)
 )
 
-# ----------------------------
 # Machine CPU capacity (from ADD events)
-# ----------------------------
 df_capacity = (
     df_machines
     .filter(col("event_type") == 0)  # ADD
@@ -48,9 +42,7 @@ df_capacity = (
     .dropDuplicates(["machine_id"])
 )
 
-# ----------------------------
 # CPU requested per machine
-# ----------------------------
 df_requests = (
     df_tasks
     .filter(col("event_type") == 1)  # SCHEDULE
@@ -62,9 +54,7 @@ df_requests = (
     )
 )
 
-# ----------------------------
 # Compare requests vs capacity
-# ----------------------------
 df_joined = (
     df_requests
     .join(df_capacity, on="machine_id", how="inner")
@@ -75,9 +65,7 @@ df_overcommit = df_joined.withColumn(
     col("total_cpu_requested") > col("cpu_capacity")
 )
 
-# ----------------------------
 # Statistics
-# ----------------------------
 total_machines = df_joined.count()
 overcommitted_machines = df_overcommit.filter(col("is_overcommitted")).count()
 

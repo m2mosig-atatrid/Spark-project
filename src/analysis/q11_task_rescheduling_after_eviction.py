@@ -4,9 +4,7 @@ import glob, os
 import matplotlib.pyplot as plt
 from src.schemas import task_events_schema
 
-# ----------------------------
 # Spark session
-# ----------------------------
 spark = (
     SparkSession.builder
     .appName("Q11_Task_Rescheduling_After_Eviction")
@@ -15,9 +13,7 @@ spark = (
 
 spark.sparkContext.setLogLevel("WARN")
 
-# ----------------------------
 # Load task events
-# ----------------------------
 files = glob.glob("data/task_events/*.csv.gz")
 
 df = (
@@ -26,9 +22,7 @@ df = (
     .csv(files)
 )
 
-# ----------------------------
 # Number of machines per task (SCHEDULE events)
-# ----------------------------
 task_machines = (
     df.filter(col("event_type") == 1)  # SCHEDULE
       .filter(col("machine_id").isNotNull())
@@ -38,9 +32,7 @@ task_machines = (
       )
 )
 
-# ----------------------------
 # Identify evicted tasks
-# ----------------------------
 evicted_tasks = (
     df.filter(col("event_type") == 2)  # EVICT
       .select("job_id", "task_index")
@@ -48,9 +40,7 @@ evicted_tasks = (
       .withColumn("was_evicted", col("job_id").isNotNull())
 )
 
-# ----------------------------
 # Join & label tasks
-# ----------------------------
 task_stats = (
     task_machines
     .join(evicted_tasks, ["job_id", "task_index"], "left")
@@ -60,9 +50,7 @@ task_stats = (
     )
 )
 
-# ----------------------------
 # Aggregate comparison
-# ----------------------------
 result = (
     task_stats
     .groupBy("was_evicted")
@@ -74,9 +62,7 @@ result = (
 
 result.show()
 
-# ----------------------------
 # Visualization
-# ----------------------------
 os.makedirs("plots", exist_ok=True)
 
 pdf = result.toPandas()

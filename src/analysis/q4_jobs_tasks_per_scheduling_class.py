@@ -4,16 +4,12 @@ import matplotlib.pyplot as plt
 import os
 from src.schemas import job_events_schema, task_events_schema
 
-# -----------------------
 # Spark session
-# -----------------------
 spark = SparkSession.builder \
     .appName("Q4_Jobs_Tasks_Per_Scheduling_Class") \
     .getOrCreate()
 
-# -----------------------
 # Load data
-# -----------------------
 df_jobs = spark.read \
     .schema(job_events_schema) \
     .option("recursiveFileLookup", "true") \
@@ -24,9 +20,7 @@ df_tasks = spark.read \
     .option("recursiveFileLookup", "true") \
     .csv("data/task_events")
 
-# -----------------------
 # Jobs per scheduling class
-# -----------------------
 jobs_per_class = (
     df_jobs
     .filter(col("scheduling_class").isNotNull())
@@ -40,9 +34,7 @@ jobs_per_class = (
 print("\nJobs per scheduling class:")
 jobs_per_class.show()
 
-# -----------------------
 # Tasks per scheduling class
-# -----------------------
 tasks_per_class = (
     df_tasks
     .filter(col("scheduling_class").isNotNull())
@@ -54,15 +46,11 @@ tasks_per_class = (
 print("\nTasks per scheduling class:")
 tasks_per_class.show()
 
-# -----------------------
 # Convert to Pandas for plotting
-# -----------------------
 jobs_pd = jobs_per_class.toPandas()
 tasks_pd = tasks_per_class.toPandas()
 
-# -----------------------
 # Plot
-# -----------------------
 os.makedirs("plots", exist_ok=True)
 
 plt.figure(figsize=(8, 5))

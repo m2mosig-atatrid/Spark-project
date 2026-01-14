@@ -4,12 +4,14 @@ import matplotlib.pyplot as plt
 import os, glob
 from src.schemas import task_events_schema
 
+# Spark session
 spark = SparkSession.builder \
     .appName("Q7_Task_Locality_By_Job") \
     .getOrCreate()
 
 spark.sparkContext.setLogLevel("WARN")
 
+# Load dataset
 files = glob.glob("data/task_events/*.csv.gz")
 
 df_tasks = spark.read \
