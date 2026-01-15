@@ -42,7 +42,7 @@ Spark-project/
 │ ├── comparison/ # DataFrame vs RDD vs Pandas comparison
 │ └── schemas.py # Explicit Spark schemas
 │
-├── data/ # Google Cluster Trace datasets
+├── data/ # Google Cluster Trace datasets (not submitted)
 │
 ├── plots/ # Generated figures
 │
